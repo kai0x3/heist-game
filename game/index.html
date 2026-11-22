@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>VAULTBREAK — The Meridian Job</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #07090f; color: #e2e8f0; font-family: system-ui, -apple-system, sans-serif;
+    display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+  #wrap { width: min(1280px, 100vw); padding: 10px; }
+  #hud { display: flex; gap: 14px; align-items: center; background: #0f1526; border: 1px solid #26314d;
+    border-radius: 10px; padding: 8px 14px; margin-bottom: 8px; flex-wrap: wrap; }
+  #hud .brand { font-weight: 800; letter-spacing: 2px; color: #fbbf24; font-size: 18px; }
+  #hud .brand small { color: #94a3b8; font-weight: 600; letter-spacing: 1px; font-size: 11px; }
+  #objective { flex: 1; color: #a5f3fc; font-weight: 600; font-size: 14px; text-align: center; }
+  .meter { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; }
+  #alarmBar { width: 150px; height: 12px; background: #1e293b; border-radius: 6px; overflow: hidden; }
+  #alarmFill { height: 100%; width: 0%; background: #facc15; transition: width .2s; }
+  #lives { color: #f87171; font-size: 18px; letter-spacing: 2px; }
+  #loot { color: #fbbf24; font-weight: 800; }
+  #coins, #timer { color: #cbd5e1; font-weight: 700; }
+  #stage { position: relative; width: 100%; }
+  canvas { width: 100%; height: auto; display: block; border-radius: 10px; border: 1px solid #26314d;
+    background: #1d2333; cursor: crosshair; }
+  #flash { position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+    color: #fca5a5; font-weight: 800; font-size: 20px; text-shadow: 0 2px 8px #000; pointer-events: none; }
+  #crack { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); width: 260px;
+    display: none; text-align: center; color: #c4b5fd; font-weight: 700; font-size: 13px; }
+  #crackBar { height: 10px; background: #1e293b; border-radius: 5px; overflow: hidden; margin-top: 4px; }
+  #crackFill { height: 100%; width: 0%; background: #a78bfa; }
+  .screen { position: absolute; inset: 0; display: none; align-items: center; justify-content: center;
+    flex-direction: column; gap: 14px; background: rgba(4,6,14,0.82); border-radius: 10px; text-align: center; padding: 20px; }
+  .screen h1 { font-size: 52px; letter-spacing: 6px; color: #fbbf24; }
+  .screen h2 { font-size: 34px; letter-spacing: 3px; }
+  .screen p { color: #cbd5e1; max-width: 560px; line-height: 1.55; font-size: 15px; }
+  .screen .keys { color: #94a3b8; font-size: 13px; }
+  .screen button { background: #fbbf24; color: #111; border: 0; border-radius: 8px; padding: 12px 28px;
+    font-size: 17px; font-weight: 800; cursor: pointer; }
+  .screen button:hover { background: #fcd34d; }
+  #winStats, #bustedStats { color: #a5f3fc; font-weight: 700; }
+  #hints { color: #64748b; font-size: 12.5px; text-align: center; margin-top: 8px; line-height: 1.6; }
+  #diag { display: none; }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="hud">
+    <div class="brand">VAULTBREAK <small>THE MERIDIAN JOB</small></div>
+    <div id="objective">Grab the MERIDIAN DIAMOND in the vault</div>
+    <div class="meter"><span id="alarmText">ALARM 0%</span><div id="alarmBar"><div id="alarmFill"></div></div></div>
+    <div id="lives">♥♥♥</div>
+    <div id="loot">$0</div>
+    <div id="coins">◉ × 5</div>
+    <div id="timer">00:00</div>
+  </div>
+  <div id="stage">
+    <canvas id="game" width="1280" height="800"></canvas>
+    <div id="flash"></div>
+    <div id="crack">CRACKING THE CASE…<div id="crackBar"><div id="crackFill"></div></div></div>
+    <div class="screen" id="screen-title">
+      <h1>VAULTBREAK</h1>
+      <h2>THE MERIDIAN JOB</h2>
+      <p>One night. One diamond. Four guards, three sweeping cameras and an alarm that
+      never forgets. Sneak through the shadows, crack the glass case in the vault,
+      and get back to the vent — with $50,000 in your pocket.</p>
+      <p class="keys">WASD / arrows — move &nbsp;·&nbsp; SHIFT — sneak &nbsp;·&nbsp; E — crack the case / crawl a vent
+      &nbsp;·&nbsp; CLICK or F — toss a coin to distract a guard &nbsp;·&nbsp; P — pause</p>
+      <button id="btnStart">START THE HEIST</button>
+    </div>
+    <div class="screen" id="screen-pause">
+      <h2>PAUSED</h2>
+      <p>The guards are still out there. Take a breath.</p>
+      <button id="btnResume">RESUME</button>
+    </div>
+    <div class="screen" id="screen-win">
+      <h2 style="color:#4ade80">CLEAN GETAWAY!</h2>
+      <p>The Meridian Diamond is yours and the night never knew you were there.</p>
+      <p id="winStats"></p>
+      <button id="btnAgain">RUN IT AGAIN</button>
+    </div>
+    <div class="screen" id="screen-busted">
+      <h2 style="color:#f87171">BUSTED!</h2>
+      <p>The Meridian's finest caught up with you. The diamond stays in its case.</p>
+      <p id="bustedStats"></p>
+      <button id="btnRetry">TRY AGAIN</button>
+    </div>
+  </div>
+  <div id="hints">Stay out of the yellow cones — guards go from curious (?) to hunting (!) fast.
+  Cameras sweep on their own. Shadow tiles slow a guard's suspicion. A tossed coin pulls the nearest guard away.
+  Two vents connect the lobby to the vault — press E beside one to crawl through.</div>
+  <pre id="diag"></pre>
+</div>
+<script src="src/config.js"></script>
+<script src="src/geometry.js"></script>
+<script src="src/level.js"></script>
+<script src="src/audio.js"></script>
+<script src="src/player.js"></script>
+<script src="src/guards.js"></script>
+<script src="src/cameras.js"></script>
+<script src="src/render.js"></script>
+<script src="src/main.js"></script>
+</body>
+</html>
