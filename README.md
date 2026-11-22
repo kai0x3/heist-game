@@ -1,8 +1,10 @@
-![make.fun](https://make.fun/badge/best-heist-game-20261122-0559.svg)
-![rank](https://make.fun/badge/kai0x3/heist-game/rank.svg)
-![reward](https://make.fun/badge/kai0x3/heist-game/reward.svg)
+[![make.fun · best-heist-game-20261122-0559](https://make.fun/badge/best-heist-game-20261122-0559.svg)](https://make.fun/bounty/best-heist-game-20261122-0559?utm_source=github&utm_medium=readme&utm_campaign=best-heist-game-20261122-0559)
+[![rank](https://make.fun/badge/best-heist-game-20261122-0559/kai0x3/heist-game/rank.svg)](https://make.fun/bounty/best-heist-game-20261122-0559/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=best-heist-game-20261122-0559)
+[![reward](https://make.fun/badge/best-heist-game-20261122-0559/kai0x3/heist-game/reward.svg)](https://make.fun/bounty/best-heist-game-20261122-0559?utm_source=github&utm_medium=readme&utm_campaign=best-heist-game-20261122-0559)
 
 # VAULTBREAK — The Meridian Job
+
+Built for the make.fun bounty: https://make.fun/bounty/best-heist-game-20261122-0559
 
 A complete top-down heist game that runs offline in a desktop browser from static
 files. One night, one diamond: sneak through the Meridian Bank after dark, past
@@ -45,8 +47,8 @@ the service vent.
 
 Real renders of the game's own code (headless Chromium, `?shot=…`):
 
-1. `1-cover.png` — mid-heist: the thief sneaking past a suspicious guard, cones,
+1. `screenshots/1-cover.jpg` — mid-heist: the thief sneaking past a suspicious guard, cones,
    cameras, loot and alarm all in frame
-2. `2-patrol.png` — the floor at calm: guards on patrol, cones sweeping
-3. `3-alarm.png` — lockdown: alarm at 82%, a guard in full chase
-4. `4-escape.png` — diamond secured, the thief slipping back to the vent
+2. `screenshots/2-patrol.jpg` — the floor at calm: guards on patrol, cones sweeping
+3. `screenshots/3-alarm.jpg` — lockdown: alarm at 82%, a guard in full chase
+4. `screenshots/4-escape.jpg` — diamond secured, the thief slipping back to the vent
